@@ -2,7 +2,7 @@
     "name": "mbence/livephp-bundle",
     "type": "symfony-bundle",
     "description": "LivePHP Bundle for Symfony2",
-    "keywords": ["dev","developer","refresh","autorefresh"],
+    "keywords": ["symfony","refresh","autorefresh"],
     "homepage": "https://github.com/mbence/LivePHPBundle",
     "license": "MIT",
     "authors": [
