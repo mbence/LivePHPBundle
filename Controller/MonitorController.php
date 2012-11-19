@@ -2,10 +2,10 @@
 
 namespace MBence\LivePHPBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Response;
 
-class MonitorController extends Controller
+class MonitorController extends ContainerAware
 {
     /** list of directories to check for changes relative to the app root dir (/app) */
     protected $dirs = array('.', '../web', '../src');
@@ -26,13 +26,33 @@ class MonitorController extends Controller
         $start = (int) ($start_time / 1000);
         
         $this->response = new Response();
-        $this->appDir = $this->get('kernel')->getRootDir() . '/';
+        $this->appDir = $this->container->get('kernel')->getRootDir() . '/';
 
+        $this->getConfig();
         $this->setHeaders();
         $this->setDeadLine();                
         $this->main($start);
 
         return $this->response;
+    }
+   
+    /**
+     * Read the configuration from config.yml
+     */
+    protected function getConfig()
+    {
+        if ($this->container->hasParameter('livephp.dirs')) {
+            $dirs = $this->container->getParameter('livephp.dirs');
+            if (!empty($dirs)) {
+                $this->dirs = $this->container->getParameter('livephp.dirs');
+            }
+        }
+        if ($this->container->hasParameter('livephp.ignore')) {
+            $ignore = $this->container->getParameter('livephp.ignore');
+            if (!empty($ignore)) {
+                $this->ignore = $ignore;
+            }
+        }
     }
 
     /**
@@ -114,7 +134,7 @@ class MonitorController extends Controller
                             $mtime = filemtime($file);
                             if ($mtime && $start < $mtime) {
                                 if ($this->logging) {
-                                    $logger = $this->get('logger');
+                                    $logger = $this->container->get('logger');
                                     $logger->info('LivePHP: file change detected: ' . $file);
                                 }
                                 // return true at the first positive match

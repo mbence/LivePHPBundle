@@ -19,7 +19,16 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('live_php');
-
+        $rootNode
+            ->children()
+                ->arrayNode('dirs')
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('ignore')
+                    ->prototype('scalar')->end()
+                ->end()
+        ->end()
+        ;
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
         // more information on that topic.
