@@ -76,7 +76,7 @@ Livephp.js must be loaded on every page you want to work with, so a layout templ
     {% endblock %}
 ```
 
-> Now LivePHP is working. You can open one of your pages in a browser and if you edit and save a file in your project, the browser will automatically refresh and show the new contents.
+#### Now LivePHP is working. You can open one of your pages in a browser and if you edit and save a file in your project, the browser will automatically refresh and show the new contents.
 
 
 ### Optional Step 5: Configure LivePHP
