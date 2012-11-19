@@ -53,7 +53,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new MBence\LivePHPBundle(),
+        new MBence\LivePHPBundle\LivePHPBundle(),
     );
 }
 ```

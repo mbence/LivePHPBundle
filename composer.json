@@ -20,5 +20,6 @@
         "psr-0": {
             "MBence\\LivePHPBundle": ""
         }
-    }
+    },
+    "target-dir": "MBence\\LivePHPBundle"
 }
