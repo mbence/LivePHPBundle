@@ -104,7 +104,7 @@ but if it cant set the timeout for some reason it will fall back to your servers
 ### The front controller name in js
 The `app_dev.php` front controller is hardcoded in `livephp.js`. If you use a different filename, you should update it in the line 17:
 ``` javascript
-# Resources/public/js/livephp.js
+// Resources/public/js/livephp.js
     init: function() {
         // the url for the monitor (with the front controller)
         LivePhp.url = '/app_dev.php/livephpmonitor';
