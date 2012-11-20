@@ -1,4 +1,4 @@
-live_php_homepage:
+live_php_monitor:
     pattern:  /livephpmonitor/{start_time}
     defaults: { _controller: LivePHPBundle:Monitor:index }
     requirements:
