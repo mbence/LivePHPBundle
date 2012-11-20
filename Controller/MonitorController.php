@@ -30,7 +30,8 @@ class MonitorController extends ContainerAware
 
         $this->getConfig();
         $this->setHeaders();
-        $this->setDeadLine();                
+        $this->setDeadLine();   
+        $this->closeSession();
         $this->main($start);
 
         return $this->response;
@@ -68,6 +69,19 @@ class MonitorController extends ContainerAware
     {
         $this->response->headers->set('Cache-Control', 'no-cache, must-revalidate');
         $this->response->headers->set('Expires', '-1');
+    }
+    
+    /**
+     * Close the session to prevent file locking
+     * 
+     * File based sessions will lock paralel threads, and can cause very long response times.
+     * Closing the session (we don't need it here) will solve this problem.
+     */
+    protected function closeSession()
+    {
+        $session = $this->container->get('session');
+        $session->save();
+        session_write_close();
     }
         
     /**
