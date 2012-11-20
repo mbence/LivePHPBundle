@@ -27,5 +27,6 @@ class LivePHPExtension extends Extension
         
         $container->setParameter('livephp.dirs', $config['dirs']);
         $container->setParameter('livephp.ignore', $config['ignore']);
+        $container->setParameter('livephp.timelimit', $config['timelimit']);
     }
 }

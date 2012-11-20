@@ -27,6 +27,9 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('ignore')
                     ->prototype('scalar')->end()
                 ->end()
+                ->scalarNode('timelimit')
+                    ->defaultValue(125)
+                ->end()
         ->end()
         ;
         // Here you should define the parameters that are allowed to

@@ -53,6 +53,12 @@ class MonitorController extends ContainerAware
                 $this->ignore = $ignore;
             }
         }
+        if ($this->container->hasParameter('livephp.timelimit')) {
+            $timeLimit = $this->container->getParameter('livephp.timelimit');
+            if (!empty($timeLimit)) {
+                $this->timeLimit = $timeLimit;
+            }
+        }
     }
 
     /**

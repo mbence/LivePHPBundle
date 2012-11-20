@@ -43,8 +43,6 @@ Composer will install the bundle to your project's `vendor/mbence/livephp-bundle
 
 ### Step 2: Enable the bundle in your AppKernel
 
-Enable the bundle in the kernel:
-
 ``` php
 <?php
 // app/AppKernel.php
@@ -60,9 +58,9 @@ public function registerBundles()
 
 ### Step 3: Import LivePHP routing files
 
-Add this to your routing.yml file:
+Add this to your routing_dev.yml file:
 ``` yaml
-# app/config/routing.yml
+# app/config/routing_dev.yml
 livephp_monitor:
     resource: "@LivePHPBundle/Resources/config/routing.yml"    
 ```
@@ -76,18 +74,39 @@ Livephp.js must be loaded on every page you want to work with, so a layout templ
     {% endblock %}
 ```
 
-#### Now LivePHP is working. You can open one of your pages in a browser and if you edit and save a file in your project, the browser will automatically refresh and show the new contents.
+#### Now LivePHP is ready. You can open one of your pages in a browser and if you edit and save a file in your project, the browser will automatically refresh and show the new contents.
 
 
-### Optional Step 5: Configure LivePHP
+## Optional Steps
 
-You can set many options in LivePHP, including what directories to monitor or ignore, by adding the following configuration to your `config.yml`:
+### Configure LivePHP
+
+You can set many options in LivePHP, including what directories to monitor or ignore, by adding the following configuration to your `config_dev.yml`:
 ``` yaml
-# app/config/config.yml
+# app/config/config_dev.yml
 live_php:
     dirs: [., ../src, ../web]
     ignore: [logs, cache]
+    timelimit: 125
 ```
 By default LivePHP will monitor the `app`, `src` and `web` directories and it will ignore the `logs` and `cache` directories.
+You can also set the time limit - how long a monitor worker should run in the background. Default is 125 sec. LivePHP will try to use this value, 
+but if it cant set the timeout for some reason it will fall back to your servers settings, and work just fine.
 
+### If your app requires authentication, you should add LivePHP to your firewall rules:
 
+``` yaml
+# app/config/security.yml
+    access_control:
+        - { path: ^/livephpmonitor, role: IS_AUTHENTICATED_ANONYMOUSLY }
+```
+
+### The front controller name in js
+The `app_dev.php` front controller is hardcoded in `livephp.js`. If you use a different filename, you should update it in the line 17:
+``` javascript
+# Resources/public/js/livephp.js
+    init: function() {
+        // the url for the monitor (with the front controller)
+        LivePhp.url = '/app_dev.php/livephpmonitor';
+    //...
+```

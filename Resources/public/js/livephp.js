@@ -13,8 +13,7 @@ var LivePhp = {
 
     /** Initializes the start time and the query cicle */
     init: function() {
-        // get the url for our php script (which is just beside this js file)
-        //LivePhp.url = LivePhp.scriptSource().replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/livephpmonitor';
+        // the url for the monitor (with the front controller)
         LivePhp.url = '/app_dev.php/livephpmonitor';
         
         if (0 === LivePhp.start) {
