@@ -43,6 +43,8 @@ Composer will install the bundle to your project's `vendor/mbence/livephp-bundle
 
 ### Step 2: Enable the bundle in your AppKernel
 
+It is strongly recommended that you never use this script on a live site, so it's best to add the bundle only for the dev environment.
+
 ``` php
 <?php
 // app/AppKernel.php
@@ -51,8 +53,11 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new MBence\LivePHPBundle\LivePHPBundle(),
     );
+
+    if ('dev' == $this->getEnvironment()) {
+        $bundles[] = new MBence\LivePHPBundle\LivePHPBundle();
+    }
 }
 ```
 
@@ -70,7 +75,9 @@ livephp_monitor:
 Livephp.js must be loaded on every page you want to work with, so a layout template file is a good place to add the following:
 ``` twig
     {% block javascripts %}
-        <script src="{{ asset('/bundles/livephp/js/livephp.js') }}" type="text/javascript"></script>
+        {% if app.environment == 'dev' %} 
+            <script src="{{ asset('/bundles/livephp/js/livephp.js') }}" type="text/javascript"></script>
+        {% endif %}
     {% endblock %}
 ```
 
