@@ -25,10 +25,10 @@ This bundle requires Symfony2.
 
 Add the following in your composer.json:
 
-```js
+```json
 {
     "require": {
-        "mbence/livephp-bundle": "*"
+        "mbence/livephp-bundle": "dev-master"
     }
 }
 ```
