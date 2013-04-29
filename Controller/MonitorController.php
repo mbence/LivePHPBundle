@@ -97,7 +97,7 @@ class MonitorController extends ContainerAware
     protected function setDeadLine()
     {
         // try to set the time limit
-        set_time_limit(30);//$this->timeLimit);
+        set_time_limit($this->timeLimit);
         // lets check what the actual limit is
         $limit = ini_get('max_execution_time');
 
