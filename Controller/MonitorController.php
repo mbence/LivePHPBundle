@@ -3,7 +3,8 @@
 namespace MBence\LivePHPBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class MonitorController extends ContainerAware
 {
@@ -13,30 +14,32 @@ class MonitorController extends ContainerAware
     protected $ignore = array('logs', 'cache');
     /** default time limit in seconds */
     protected $timeLimit = 125;
+    /** Refresh css files without reloading the page */
+    protected $cssOnTheFly = true;
     /** the time to die */
     protected $deadLine;
     /** enable / disable logging */
     protected $logging = false;
-    
+
     protected $appDir;
     protected $response;
 
     public function indexAction($start_time)
     {
         $start = (int) ($start_time / 1000);
-        
-        $this->response = new Response();
+
+        $this->response = new JsonResponse();
         $this->appDir = $this->container->get('kernel')->getRootDir() . '/';
 
         $this->getConfig();
         $this->setHeaders();
-        $this->setDeadLine();   
+        $this->setDeadLine();
         $this->closeSession();
         $this->main($start);
 
         return $this->response;
     }
-   
+
     /**
      * Read the configuration from config.yml
      */
@@ -60,6 +63,10 @@ class MonitorController extends ContainerAware
                 $this->timeLimit = $timeLimit;
             }
         }
+        if ($this->container->hasParameter('livephp.cssonthefly')) {
+            $css_onthefly = $this->container->getParameter('livephp.cssonthefly');
+            $this->cssOnTheFly = $css_onthefly;
+        }
     }
 
     /**
@@ -70,10 +77,10 @@ class MonitorController extends ContainerAware
         $this->response->headers->set('Cache-Control', 'no-cache, must-revalidate');
         $this->response->headers->set('Expires', '-1');
     }
-    
+
     /**
      * Close the session to prevent file locking
-     * 
+     *
      * File based sessions will lock paralel threads, and can cause very long response times.
      * Closing the session (we don't need it here) will solve this problem.
      */
@@ -83,14 +90,14 @@ class MonitorController extends ContainerAware
         $session->save();
         session_write_close();
     }
-        
+
     /**
      * Sets the time limit if possible
      */
     protected function setDeadLine()
     {
         // try to set the time limit
-        set_time_limit($this->timeLimit); 
+        set_time_limit(30);//$this->timeLimit);
         // lets check what the actual limit is
         $limit = ini_get('max_execution_time');
 
@@ -114,10 +121,11 @@ class MonitorController extends ContainerAware
         do {
             // look for the changes every second until the execution time allows it.
             foreach ($this->dirs as $root) {
-                if ($this->checkDir(realpath($this->appDir . $root), $start)) {
+                $result = $this->checkDir(realpath($this->appDir . $root), $start);
+                if ($result) {
                     // if we find modified files in any of the directories, we can skip the rest
-                    $this->response->setContent('1');
-                    
+                    $this->response->setData($result);
+
                     return true;
                 }
             }
@@ -132,7 +140,7 @@ class MonitorController extends ContainerAware
      *
      * @param string $root directory path
      * @param int $start (unix timestamp) to find newer files of
-     * @return bool true if modified file found, false otherwise
+     * @return bool true (or the modification time of the css file) if modified file found, false otherwise
      */
     protected function checkDir($root, $start)
     {
@@ -157,8 +165,16 @@ class MonitorController extends ContainerAware
                                     $logger = $this->container->get('logger');
                                     $logger->info('LivePHP: file change detected: ' . $file);
                                 }
+                                $pinfo = pathinfo($file);
                                 // return true at the first positive match
-                                return true;
+                                if ($this->cssOnTheFly && $pinfo['extension'] == 'css') {
+                                    // if the file is a css then then we send the whole path back
+                                    return $mtime * 1000;
+                                }
+                                else {
+                                    // otherwise return true
+                                    return true;
+                                }
                             }
                         }
                     }

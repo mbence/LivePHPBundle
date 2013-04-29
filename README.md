@@ -3,13 +3,13 @@ LivePHPBundle for Symfony
 
 LivePHP will save developers time by automatically refreshing the browser when a file is changed in the working directory.
 
-## Description 
+## Description
 
 This bundle was written to make developers' life easier.
-Inspired by the brilliant live.js (written by Martin Kool), 
+Inspired by the brilliant live.js (written by Martin Kool),
 this script will auto refresh your browser if you change any files in your working directory. No need for Alt-Tab and manual refresh anymore.
 
-With this script, it is also very easy to check your work in many browsers simultaneously. 
+With this script, it is also very easy to check your work in many browsers simultaneously.
 Just load the site in all your browsers or devices and the rest goes automatically.
 
 **WARNING!**
@@ -19,7 +19,7 @@ Just load the site in all your browsers or devices and the rest goes automatical
 
 This bundle requires Symfony2.
 
-## Installation 
+## Installation
 
 ### Step 1: Download the bundle using composer
 
@@ -67,7 +67,7 @@ Add this to your routing_dev.yml file:
 ``` yaml
 # app/config/routing_dev.yml
 livephp_monitor:
-    resource: "@LivePHPBundle/Resources/config/routing.yml"    
+    resource: "@LivePHPBundle/Resources/config/routing.yml"
 ```
 
 ### Step 4: Include the livephp.js in your templates
@@ -75,7 +75,7 @@ livephp_monitor:
 Livephp.js must be loaded on every page you want to work with, so a layout template file is a good place to add the following:
 ``` twig
     {% block javascripts %}
-        {% if app.environment == 'dev' %} 
+        {% if app.environment == 'dev' %}
             <script src="{{ asset('/bundles/livephp/js/livephp.js') }}" type="text/javascript"></script>
         {% endif %}
     {% endblock %}
@@ -95,10 +95,13 @@ live_php:
     dirs: [., ../src, ../web]
     ignore: [logs, cache]
     timelimit: 125
+    cssonthefly: true
 ```
 By default LivePHP will monitor the `app`, `src` and `web` directories and it will ignore the `logs` and `cache` directories.
-You can also set the time limit - how long a monitor worker should run in the background. Default is 125 sec. LivePHP will try to use this value, 
+You can also set the time limit - how long a monitor worker should run in the background. Default is 125 sec. LivePHP will try to use this value,
 but if it cant set the timeout for some reason it will fall back to your servers settings, and work just fine.
+New feature since v1.2: With the `cssonthefly` you can enable or disable css refresh without reloading the page. By default this is enabled.
+
 
 ### If your app requires authentication, you should add LivePHP to your firewall rules:
 

@@ -30,6 +30,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('timelimit')
                     ->defaultValue(125)
                 ->end()
+                ->booleanNode('cssonthefly')
+                    ->defaultValue(125)
+                ->end()
         ->end()
         ;
         // Here you should define the parameters that are allowed to
